@@ -29,7 +29,7 @@ set(GGML_CUDA_COMPRESSION_MODE default)
 
 if((CMAKE_OSX_ARCHITECTURES AND NOT CMAKE_OSX_ARCHITECTURES MATCHES "arm64")
     OR (NOT CMAKE_OSX_ARCHITECTURES AND NOT CMAKE_SYSTEM_PROCESSOR MATCHES "arm|aarch64|ARM64|ARMv[0-9]+"))
-    set(GGML_CPU_ALL_VARIANTS ON)
+    set(GGML_CPU_ALL_VARIANTS OFF)
 endif()
 
 if (CMAKE_OSX_ARCHITECTURES MATCHES "x86_64")
@@ -85,7 +85,8 @@ if(CMAKE_CUDA_COMPILER)
     endif()
 
     find_package(CUDAToolkit)
-    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ml/backend/ggml/ggml/src/ggml-cuda)
+    # CUDA subdirectory is added automatically by ggml build system
+    # add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ml/backend/ggml/ggml/src/ggml-cuda)
     install(TARGETS ggml-cuda
         RUNTIME_DEPENDENCIES
             DIRECTORIES ${CUDAToolkit_BIN_DIR} ${CUDAToolkit_BIN_DIR}/x64 ${CUDAToolkit_LIBRARY_DIR}

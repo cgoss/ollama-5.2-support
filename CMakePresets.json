@@ -22,8 +22,8 @@
       "name": "CUDA 11",
       "inherits": [ "CUDA" ],
       "cacheVariables": {
-        "CMAKE_CUDA_ARCHITECTURES": "50-virtual;52-virtual;60-virtual;61-virtual;70-virtual;75-virtual;80-virtual;86-virtual;87-virtual;89-virtual;90-virtual",
-        "CMAKE_CUDA_FLAGS": "-Wno-deprecated-gpu-targets -t 2",
+        "CMAKE_CUDA_ARCHITECTURES": "50-virtual;52-virtual;60-virtual;61-virtual;70-virtual;75-virtual;80-virtual;86-virtual",
+        "CMAKE_CUDA_FLAGS": "-Wno-deprecated-gpu-targets",
         "OLLAMA_RUNNER_DIR": "cuda_v11"
       }
     },
