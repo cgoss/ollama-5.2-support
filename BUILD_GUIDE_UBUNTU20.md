@@ -336,6 +336,90 @@ sudo systemctl start ollama
 sudo systemctl status ollama
 ```
 
+### Network Configuration
+
+By default, Ollama only listens on `127.0.0.1:11434` (localhost). To make it accessible on your local network:
+
+#### Option 1: Listen on All Network Interfaces
+
+Edit the systemd service file to bind to all interfaces:
+
+```bash
+sudo systemctl edit --full ollama.service
+```
+
+Add the `OLLAMA_HOST` environment variable to the `[Service]` section:
+
+```ini
+[Unit]
+Description=Ollama Service
+After=network-online.target
+
+[Service]
+ExecStart=/usr/local/bin/ollama serve
+User=ollama
+Group=ollama
+Restart=always
+RestartSec=3
+Environment="PATH=/usr/local/cuda-11.4/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+Environment="LD_LIBRARY_PATH=/usr/local/lib/ollama:/usr/local/cuda-11.4/lib64"
+Environment="CUDA_HOME=/usr/local/cuda-11.4"
+Environment="OLLAMA_HOST=0.0.0.0:11434"
+
+[Install]
+WantedBy=default.target
+```
+
+Reload and restart the service:
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl restart ollama
+```
+
+#### Option 2: Bind to Specific IP Address
+
+If you prefer to bind to a specific network interface IP instead of all interfaces:
+
+```ini
+Environment="OLLAMA_HOST=192.168.1.100:11434"
+```
+
+Replace `192.168.1.100` with your server's actual local IP address.
+
+#### Configure Firewall
+
+Allow incoming connections on port 11434:
+
+```bash
+# For UFW (Ubuntu default)
+sudo ufw allow 11434/tcp
+sudo ufw reload
+
+# Verify firewall status
+sudo ufw status
+```
+
+#### Verify Network Access
+
+Check that Ollama is listening on all interfaces:
+
+```bash
+sudo netstat -tlnp | grep 11434
+# or
+sudo ss -tlnp | grep 11434
+```
+
+You should see `0.0.0.0:11434` instead of `127.0.0.1:11434`.
+
+Test from another machine on your network:
+
+```bash
+curl http://YOUR_SERVER_IP:11434/api/version
+```
+
+Replace `YOUR_SERVER_IP` with your Ubuntu server's local IP address.
+
 ## Troubleshooting
 
 ### Issue 1: GPU Not Detected (0 B VRAM)
